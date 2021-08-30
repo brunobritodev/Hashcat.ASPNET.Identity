@@ -1,0 +1,43 @@
+﻿@page
+@using System.Collections
+@model IndexModel
+
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+</div>
+@if (User.Identity != null && User.Identity.IsAuthenticated)
+{
+    <div class="text-center">
+        <h1 class="display-4">Logged in!</h1>
+        <h4>Users: </h4>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>User</th>
+                <th>Algorithm</th>
+                <th>Hash</th>
+                <th>Hashcat Format</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td>@user.Username</td>
+                    <td>@user.Alg()</td>
+                    <td><small>@user.Password</small></td>
+                    <td><small>@user.GetHashcatFormat()</small></td>
+                </tr>
+            }
+            
+            </tbody>
+        </table>
+    </div>
+}
+
