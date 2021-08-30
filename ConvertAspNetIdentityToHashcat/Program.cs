@@ -14,11 +14,11 @@ namespace ConvertAspNetIdentityToHashcat
         static async Task Main(string[] args)
         {
             SetupConfigurationBuilder();
-            
+
             var hashDemo = "AQAAAAEAACcQAAAAEG7xx8smhzcYFaAhPSRj1rgxfAoqKBv4WM/4R+Z0SvFxtxuMkfgBS28p1MQzvV0OeQ==";
             var hashDemoBase64Decoded = hashDemo.FromBase64();
             var hex = BitConverter.ToString(hashDemoBase64Decoded).Replace("-", "").ToLower();
-            
+
             /*
                 Info got from: https://github.com/dotnet/aspnetcore/blob/867cec475d18892b828ac44a82d74eccfbbb0e49/src/Identity/Extensions.Core/src/PasswordHasher.cs
 

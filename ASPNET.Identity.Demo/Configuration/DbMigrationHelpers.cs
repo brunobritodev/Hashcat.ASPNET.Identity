@@ -67,7 +67,7 @@ namespace ASPNET.Identity.Demo.Configuration
             }
 
             var faker = new Faker();
-            var username = faker.Person.Email;
+            var username = new Faker().Person.Email;
             await userManager.CreateAsync(new IdentityUser()
             {
                 UserName = username,
@@ -76,7 +76,7 @@ namespace ASPNET.Identity.Demo.Configuration
                 LockoutEnd = null
             }, "P455w0rd");
             
-            username = faker.Person.Email;
+            username = new Faker().Person.Email;
             await userManager.CreateAsync(new IdentityUser()
             {
                 UserName = username,
@@ -85,7 +85,7 @@ namespace ASPNET.Identity.Demo.Configuration
                 LockoutEnd = null
             }, "Password");
 
-            username = faker.Person.Email;
+            username = new Faker().Person.Email;
             await userManager.CreateAsync(new IdentityUser()
             {
                 UserName = username,
@@ -94,7 +94,7 @@ namespace ASPNET.Identity.Demo.Configuration
                 LockoutEnd = null
             }, "Test1234");
 
-            username = faker.Person.Email;
+            username = new Faker().Person.Email;
             await userManager.CreateAsync(new IdentityUser()
             {
                 UserName = username,
@@ -103,7 +103,7 @@ namespace ASPNET.Identity.Demo.Configuration
                 LockoutEnd = null
             }, "MYSECRET");
 
-            username = faker.Person.Email;
+            username = new Faker().Person.Email;
             await userManager.CreateAsync(new IdentityUser()
             {
                 UserName = username,
