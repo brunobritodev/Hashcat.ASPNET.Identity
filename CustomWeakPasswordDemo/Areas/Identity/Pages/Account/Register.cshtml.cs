@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using CustomWeakPasswordDemo.Data;
+﻿using CustomWeakPasswordDemo.Data;
 using CustomWeakPasswordDemo.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace CustomWeakPasswordDemo.Areas.Identity.Pages.Account
 {
@@ -25,15 +20,18 @@ namespace CustomWeakPasswordDemo.Areas.Identity.Pages.Account
     {
         private readonly ICustomUserService _customUserService;
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IConfiguration _configuration;
         private readonly ILogger<RegisterModel> _logger;
 
         public RegisterModel(
             ICustomUserService customUserService,
             IHttpContextAccessor contextAccessor,
+            IConfiguration configuration,
             ILogger<RegisterModel> logger)
         {
             _customUserService = customUserService;
             _contextAccessor = contextAccessor;
+            _configuration = configuration;
             _logger = logger;
         }
 
@@ -62,8 +60,6 @@ namespace CustomWeakPasswordDemo.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
-            [Display(Name = "Hash Algoritm")]
-            public string PasswordType { get; set; }
         }
 
         public void OnGetAsync(string returnUrl = null)
@@ -76,7 +72,7 @@ namespace CustomWeakPasswordDemo.Areas.Identity.Pages.Account
             returnUrl ??= Url.Content("~/");
             if (ModelState.IsValid)
             {
-                var user = new User { Username = Input.Email, HashType = Input.PasswordType };
+                var user = new User { Username = Input.Email, HashType = _configuration["PasswordType"] };
                 var result = await _customUserService.RegisterUser(user, Input.Password);
                 if (!result.Any())
                 {

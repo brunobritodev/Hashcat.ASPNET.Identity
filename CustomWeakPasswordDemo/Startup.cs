@@ -1,19 +1,12 @@
 using CustomWeakPasswordDemo.Data;
+using CustomWeakPasswordDemo.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CustomWeakPasswordDemo.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace CustomWeakPasswordDemo
 {
@@ -37,7 +30,19 @@ namespace CustomWeakPasswordDemo
             services.AddHttpContextAccessor();
             services.AddRazorPages();
 
-            services.AddScoped<ICustomUserService, CustomUserService>();
+                    services.AddScoped<ICustomUserService, FirstClassUserService>();
+                    return;
+            switch (Configuration["PasswordType"])
+            {
+                case "MD5":
+                    services.AddScoped<ICustomUserService, Md5UserService>();
+                    break;
+                case "WeakOSS":
+                    services.AddScoped<ICustomUserService, WeakOssUserService>();
+                    break;
+                case "PlainText":
+                    break;
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using CustomWeakPasswordDemo.Data;
+﻿using CustomWeakPasswordDemo.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CustomWeakPasswordDemo.Services
 {
@@ -10,11 +10,11 @@ namespace CustomWeakPasswordDemo.Services
     ///
     /// User Argon2 instead
     /// </summary>
-    class CustomUserService : ICustomUserService
+    class Md5UserService : ICustomUserService
     {
         private readonly ApplicationDbContext _context;
 
-        public CustomUserService(ApplicationDbContext context)
+        public Md5UserService(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -25,15 +25,15 @@ namespace CustomWeakPasswordDemo.Services
             if (userDb == null)
                 return null;
 
-            if (userDb.CheckPassword(password))
+            if (Md5PasswordHasher.Verify(userDb.Password, password))
                 return userDb;
-            
+
             return null;
         }
 
         public async Task<IEnumerable<string>> RegisterUser(User user, string password)
         {
-            user.SetPassword(password);
+            user.SetPassword(Md5PasswordHasher.Hash(password));
 
             var userExist = await _context.Users.FirstOrDefaultAsync(u => u.Username == user.Username.ToLower());
             if (userExist == null)

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Security.Policy;
-using CustomWeakPasswordDemo.Services;
 
 namespace CustomWeakPasswordDemo.Data
 {
@@ -12,7 +10,6 @@ namespace CustomWeakPasswordDemo.Data
         public string Username { get; set; }
         public string Password { get; set; }
         public string HashType { get; set; }
-
         public User()
         {
             Id = Guid.NewGuid();
@@ -25,27 +22,10 @@ namespace CustomWeakPasswordDemo.Data
 
         public void SetPassword(string password)
         {
-            if (HashType == "WeakOSS1")
-            {
-                Password = SecureIdentity.Password.PasswordHasher.Hash(password);
-            }
-            else
-            {
-                Password = Md5PasswordHasher.Hash(password);
-            }
+            Password = password;
         }
 
-        public bool CheckPassword(string password)
-        {
-            if (HashType == "WeakOSS1")
-            {
-                return SecureIdentity.Password.PasswordHasher.Verify(Password, password);
-            }
-            else
-            {
-                return Md5PasswordHasher.Verify(Password, password);
-            }
-        }
+
 
         public string GetHashcatFormat()
         {
@@ -57,10 +37,9 @@ namespace CustomWeakPasswordDemo.Data
                 var subkey = passwordData[2];
                 return $"sha256:{iter}:{salt}:{subkey}";
             }
-            else
-            {
-                return Password;
-            }
+
+            // MD5 is in hashcat format. If plain text....
+            return Password;
         }
 
         public string Alg()
@@ -69,10 +48,12 @@ namespace CustomWeakPasswordDemo.Data
             {
                 return "PBKDF2 with HMAC-SHA-256, 16 bit salt, 32 bits subkey";
             }
-            else
+            else if (HashType == "MD5")
             {
                 return "MD5";
             }
+
+            return "Plain Text";
         }
     }
 }
